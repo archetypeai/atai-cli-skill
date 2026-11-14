@@ -67,16 +67,36 @@ explain anything only they can do.
    is configured, register the update link once:
    `atai update --signed-url '<link>'` (always quote it). After that, plain
    `atai update` keeps the CLI current. Relay any expiry warning it prints.
-3. **Tools and cloud sign-in.** Run the CLI's own readiness check (see
-   `atai docs llms`; on most builds it is `atai <target> preflight`). If it
-   reports missing tools, use the CLI's tool-setup command if this build has one,
-   otherwise tell the user exactly what to install. Cloud sign-in (for example
-   `aws sso login` or `az login`) opens the user's own browser and is theirs to
-   complete; run it for them when asked and say what you are doing.
-4. **Which stack?** A stack is one configuration file. If the user hasn't said
+3. **Tools: set them up for the user.** A stack install drives a few
+   command-line tools (for provisioning and for the cluster). The user never has
+   to find or install these by hand. Run `atai tools status` (read-only) to see
+   what is there. If anything is missing, tell the user in one plain line ("I'm
+   setting up the tools the install needs; it takes a minute and changes nothing
+   else on your computer"), then run `atai tools install`. It downloads
+   checksum-verified copies into the user's own folder, needs no admin rights,
+   is safe to repeat, and never changes a tool the user already installed. The
+   install also does this by itself, so a missing tool is never a reason to
+   stop. With no internet, `atai tools install --from <folder>` uses files the
+   user copied over. If this build has no `atai tools` command, update the CLI
+   first (step 2).
+4. **The cloud's own command-line tool.** Azure stacks need the Azure CLI
+   (`az`); AWS stacks need the AWS CLI only to sign in. `atai tools status`
+   says whether it is installed and gives the official install instruction for
+   this computer (for example `brew install azure-cli` on a Mac with Homebrew).
+   The CLI does not install these itself, because their official installers can
+   ask for the computer's password. Explain that, offer to run the instruction,
+   and run it only after the user agrees. If it needs admin rights they don't
+   have, that is a request for their IT administrator.
+5. **Cloud sign-in.** Only the user can sign in to their cloud account. Signing
+   in (for example `aws sso login --profile <name>` or `az login`) opens their
+   own browser; offer to start it, say what will happen, and let them finish it.
+   Never ask them to paste passwords, access keys, or tokens into the chat.
+6. **Which stack?** A stack is one configuration file. If the user hasn't said
    which, ask. Never assume.
-5. **Prove readiness without changing anything.** A clean readiness check is the
-   green light. If it fails, explain each failure in plain words and stop.
+7. **Prove readiness without changing anything.** Run the CLI's readiness check
+   (on most builds `atai <target> preflight`; see `atai docs llms`). A clean
+   result is the green light. If it fails, explain each failure in plain words,
+   fix what you can (a missing tool: step 3), and otherwise stop.
 
 If the user lacks access or permissions, say so plainly and stop. That is a
 request for their administrator, not something to work around.
@@ -84,8 +104,10 @@ request for their administrator, not something to work around.
 ## Safety model
 
 Classify every command before running it. Read-only commands (help, docs,
-version, info, verify/health, readiness checks, plan or dry-run modes, `--check`)
-are safe to run freely. Anything that creates, changes, rotates, applies,
+version, info, verify/health, readiness checks, `atai tools status`, plan or
+dry-run modes, `--check`) are safe to run freely. `atai tools install` only adds
+verified tools to the user's own folder; announce it, but it needs no further
+confirmation once the user has asked you to launch or manage a stack. Anything that creates, changes, rotates, applies,
 deletes, or uninstalls is a **change** and follows these rules:
 
 1. **Read-only first.** Run the matching check or preview before the change and
@@ -112,7 +134,8 @@ deletes, or uninstalls is a **change** and follows these rules:
 
 Confirm exact commands from the binary first (see the golden rule).
 
-- **Launch a stack:** readiness check → preview (dry-run) → summarize and confirm
+- **Launch a stack:** set up tools (`atai tools install`) → cloud sign-in →
+  readiness check → preview (dry-run) → summarize and confirm
   → install → relay the console address and where the first admin password is
   stored (never the password itself) → offer a health check.
 - **Upgrade a stack:** read the upgrade guide (`atai docs search upgrade`), show
