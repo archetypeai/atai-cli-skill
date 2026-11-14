@@ -1,0 +1,19 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.schema.json",
+  "name": "atai-cli-skill",
+  "description": "The atai CLI skill for Claude.",
+  "owner": {
+    "name": "Archetype AI"
+  },
+  "plugins": [
+    {
+      "name": "atai-cli",
+      "source": "./plugins/atai-cli",
+      "description": "Launch and manage the Archetype AI platform in plain language through the atai CLI, with built-in safety confirmations.",
+      "displayName": "atai CLI operator",
+      "category": "Infrastructure",
+      "keywords": ["atai", "archetype-ai", "platform", "deploy"],
+      "defaultEnabled": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+name: content-check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  content-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Content check
+        run: python3 scripts/content-check.py
+
+      - name: Plugin manifests are valid JSON
+        run: |
+          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+          python3 -m json.tool plugins/atai-cli/.claude-plugin/plugin.json > /dev/null
+
+      - name: Marketplace layout is consistent
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          m = json.loads(pathlib.Path(".claude-plugin/marketplace.json").read_text())
+          for p in m["plugins"]:
+              src = pathlib.Path(p["source"])
+              manifest = json.loads((src / ".claude-plugin/plugin.json").read_text())
+              assert manifest["name"] == p["name"], f"name mismatch for {src}"
+              assert (src / "skills").is_dir(), f"no skills/ in {src}"
+          print("marketplace layout OK")
+          PY
