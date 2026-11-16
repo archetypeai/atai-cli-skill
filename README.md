@@ -29,6 +29,12 @@ claude plugin install atai-cli@atai-cli-skill
 Claude's settings. On Team and Enterprise plans an admin can enable it for the
 whole organization.
 
+## Verify it's installed
+
+In Claude Code, run `/plugin` and check that **atai CLI operator** is listed and
+enabled. That's all — the skill turns on automatically when you ask Claude about
+your platform, and there's no restart.
+
 ## Update
 
 ```bash
@@ -37,6 +43,12 @@ claude plugin update atai-cli@atai-cli-skill
 ```
 
 ## Use
+
+The first time you ask Claude to work with your platform, it offers to set up the
+`atai` CLI for you — downloading it from the secure link your Archetype AI contact
+gave you — before doing anything else. That's expected. After that, just ask in
+plain English: Claude checks readiness first, shows what a change will do, and
+asks before it creates or deletes anything.
 
 Ask Claude, for example:
 
