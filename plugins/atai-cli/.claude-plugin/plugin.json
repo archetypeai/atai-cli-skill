@@ -2,11 +2,12 @@
   "$schema": "https://code.claude.com/schemas/plugin.schema.json",
   "name": "atai-cli",
   "displayName": "atai CLI operator",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Launch and manage the Archetype AI platform in plain language through the atai CLI, with built-in safety confirmations.",
   "author": {
     "name": "Archetype AI"
   },
-  "keywords": ["atai", "archetype-ai", "platform", "deploy"],
+  "license": "Apache-2.0",
+  "keywords":["atai", "archetype-ai", "platform", "deploy"],
   "skills": ["./skills/"]
 }
