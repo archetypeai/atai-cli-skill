@@ -51,5 +51,6 @@ Ask Claude, for example:
 For help, contact your Archetype AI representative. To report a security issue,
 see [SECURITY.md](SECURITY.md).
 
-Copyright © Archetype AI. All rights reserved. Use is subject to
-[LICENSE](LICENSE).
+## License
+
+Licensed under the [Apache License 2.0](LICENSE).
